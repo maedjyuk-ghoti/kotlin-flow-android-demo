@@ -11,9 +11,7 @@ import com.example.flowplayground.repo.Dog
 class DogAdapter(private var dataSet: List<Dog>) : RecyclerView.Adapter<DogAdapter.DogViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DogViewHolder {
-        val view = LayoutInflater.from(parent.context)
-                                 .inflate(R.layout.text_row_item, parent, false)
-
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.text_row_item, parent, false)
         return DogViewHolder(view)
     }
 
@@ -30,7 +28,7 @@ class DogAdapter(private var dataSet: List<Dog>) : RecyclerView.Adapter<DogAdapt
         notifyDataSetChanged()
     }
 
-    class DogViewHolder(view: View): RecyclerView.ViewHolder(view) {
+    class DogViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val textView: TextView = view.findViewById(R.id.textView)
     }
 }

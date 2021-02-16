@@ -23,7 +23,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flatMapLatest
 
-class SearchableAnimalListViewModelFactory(private val db: AppDatabase) : ViewModelProvider.Factory {
+class SearchableAnimalListViewModelFactory(
+    private val db: AppDatabase
+) : ViewModelProvider.Factory {
     @Throws(RuntimeException::class)
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         return when {
@@ -48,7 +50,6 @@ class SearchableAnimalListViewModel(db: AppDatabase) : ViewModel() {
 }
 
 class SearchableAnimalList : Fragment() {
-
     private val activityViewModel: MainActivityViewModel by activityViewModels()
     private val viewModel: SearchableAnimalListViewModel by viewModels {
         SearchableAnimalListViewModelFactory(activityViewModel.db)
@@ -62,6 +63,7 @@ class SearchableAnimalList : Fragment() {
         return inflater.inflate(R.layout.fragment_main_searchable, container, false)
     }
 
+    @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -69,13 +71,10 @@ class SearchableAnimalList : Fragment() {
             .doOnTextChanged { text, _, _, _ -> viewModel.searchName(text.toString()) }
 
         val dogAdapter = DogAdapter(listOf())
-        view.findViewById<RecyclerView>(R.id.result_list)
-            .apply {
-                adapter = dogAdapter
-            }
+        view.findViewById<RecyclerView>(R.id.result_list).adapter = dogAdapter
 
         lifecycleScope.launchWhenStarted {
-            viewModel.allDogsSearch.collect { found -> dogAdapter.updateDataSet(found) }
+            viewModel.allDogsSearch.collect(dogAdapter::updateDataSet)
         }
     }
 }

@@ -4,8 +4,9 @@ import android.app.Application
 import androidx.room.Room
 
 object DatabaseHolder {
-    lateinit var db: AppDatabase
-    fun getDatabase(applicationContext: Application) : AppDatabase {
+    private lateinit var db: AppDatabase
+    
+    fun getDatabase(applicationContext: Application): AppDatabase {
         if (::db.isInitialized.not()) {
             db = Room.databaseBuilder(
                 applicationContext,

@@ -26,8 +26,7 @@ class AnimalListViewModelFactory(private val db: AppDatabase) : ViewModelProvide
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         return when {
             AnimalListViewModel::class.java.isAssignableFrom(modelClass) ->
-                modelClass.getConstructor(AppDatabase::class.java)
-                    .newInstance( db)
+                modelClass.getConstructor(AppDatabase::class.java).newInstance(db)
             else ->
                 throw RuntimeException("Cannot create an instance of $modelClass")
         }
@@ -66,12 +65,11 @@ class AnimalList : Fragment() {
         val textView: TextView = view.findViewById(R.id.section_label)
 
         val dogAdapter = DogAdapter(listOf())
-        view.findViewById<RecyclerView>(R.id.result_list_1)
-            .apply {
-                adapter = dogAdapter
-            }
+        view.findViewById<RecyclerView>(R.id.result_list_1).adapter = dogAdapter
 
-        lifecycleScope.launchWhenStarted { pageViewModel.text.collect { text -> textView.text = text } }
-        lifecycleScope.launchWhenStarted { pageViewModel.allDogs.collect(dogAdapter::updateDataSet) }
+        lifecycleScope.run {
+            launchWhenStarted { pageViewModel.text.collect { text -> textView.text = text } }
+            launchWhenStarted { pageViewModel.allDogs.collect(dogAdapter::updateDataSet) }
+        }
     }
 }
