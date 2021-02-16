@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class Dog (
+data class Animal(
     @PrimaryKey val name: String,
     val cuteness: Int,
     val barkingVolume: Int

@@ -7,18 +7,18 @@ import android.text.InputType
 import android.view.View
 import android.widget.EditText
 import android.widget.RelativeLayout
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.tabs.TabLayout
-import androidx.viewpager.widget.ViewPager
-import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.viewpager.widget.ViewPager
+import com.example.flowplayground.repo.Animal
 import com.example.flowplayground.repo.AppDatabase
 import com.example.flowplayground.repo.DatabaseHolder
-import com.example.flowplayground.repo.Dog
 import com.example.flowplayground.ui.main.SectionsPagerAdapter
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.tabs.TabLayout
 import kotlinx.coroutines.launch
 
 class MainActivityViewModelFactory(
@@ -36,7 +36,7 @@ class MainActivityViewModelFactory(
 
 class MainActivityViewModel(
     val db: AppDatabase
-): ViewModel()
+) : ViewModel()
 
 class MainActivity : AppCompatActivity() {
 
@@ -53,7 +53,10 @@ class MainActivity : AppCompatActivity() {
 
         val viewPager: ViewPager = findViewById<ViewPager>(R.id.view_pager)
             .apply {
-                adapter = SectionsPagerAdapter(this@MainActivity.resources::getString, supportFragmentManager)
+                adapter = SectionsPagerAdapter(
+                    this@MainActivity.resources::getString,
+                    supportFragmentManager
+                )
             }
 
         findViewById<TabLayout>(R.id.tabs)
@@ -64,7 +67,11 @@ class MainActivity : AppCompatActivity() {
                 val addDogDialog = AddDogDialog()
                 AlertDialog.Builder(view.context)
                     .setView(addDogDialog.getView(view.context))
-                    .setPositiveButton("Save") { _, _ -> lifecycleScope.launch { viewModel.db.dogDao().addDog(addDogDialog.getDogFromValues()) } }
+                    .setPositiveButton("Save") { _, _ ->
+                        lifecycleScope.launch {
+                            viewModel.db.animalDao().add(addDogDialog.getDogFromValues())
+                        }
+                    }
                     .setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
                     .show()
             }
@@ -121,9 +128,11 @@ class MainActivity : AppCompatActivity() {
                 }.also(this::addView)
             }
 
-        fun getDogFromValues(): Dog =
-            Dog(name.text.toString(),
+        fun getDogFromValues(): Animal =
+            Animal(
+                name.text.toString(),
                 cuteness.text.toString().toInt(),
-                barkLevel.text.toString().toInt())
+                barkLevel.text.toString().toInt()
+            )
     }
 }

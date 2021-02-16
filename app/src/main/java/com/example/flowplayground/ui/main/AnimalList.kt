@@ -14,8 +14,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.example.flowplayground.MainActivityViewModel
 import com.example.flowplayground.R
+import com.example.flowplayground.repo.Animal
 import com.example.flowplayground.repo.AppDatabase
-import com.example.flowplayground.repo.Dog
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
@@ -36,7 +36,7 @@ class AnimalListViewModelFactory(private val db: AppDatabase) : ViewModelProvide
 class AnimalListViewModel(db: AppDatabase) : ViewModel() {
     private val selected: MutableStateFlow<Int> = MutableStateFlow(0)
     val text: Flow<String> = selected.map(::selectionToString)
-    val allDogs: Flow<List<Dog>> = db.dogDao().getAllDogsFlow()
+    val allDogs: Flow<List<Animal>> = db.animalDao().getAllFlow()
 
     private fun selectionToString(selection: Int): String =
         when (selection) {
@@ -68,7 +68,7 @@ class AnimalList : Fragment() {
         view.findViewById<RecyclerView>(R.id.result_list_1).adapter = dogAdapter
 
         lifecycleScope.run {
-            launchWhenStarted { pageViewModel.text.collect { text -> textView.text = text } }
+            launchWhenStarted { pageViewModel.text.collect(textView::setText) }
             launchWhenStarted { pageViewModel.allDogs.collect(dogAdapter::updateDataSet) }
         }
     }

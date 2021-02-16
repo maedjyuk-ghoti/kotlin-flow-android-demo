@@ -6,12 +6,14 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.flowplayground.R
-import com.example.flowplayground.repo.Dog
+import com.example.flowplayground.repo.Animal
 
-class DogAdapter(private var dataSet: List<Dog>) : RecyclerView.Adapter<DogAdapter.DogViewHolder>() {
+class DogAdapter(private var dataSet: List<Animal>) :
+    RecyclerView.Adapter<DogAdapter.DogViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DogViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.text_row_item, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.text_row_item, parent, false)
         return DogViewHolder(view)
     }
 
@@ -23,7 +25,7 @@ class DogAdapter(private var dataSet: List<Dog>) : RecyclerView.Adapter<DogAdapt
         return dataSet.size
     }
 
-    fun updateDataSet(newDataSet: List<Dog>) {
+    fun updateDataSet(newDataSet: List<Animal>) {
         dataSet = newDataSet
         notifyDataSetChanged()
     }

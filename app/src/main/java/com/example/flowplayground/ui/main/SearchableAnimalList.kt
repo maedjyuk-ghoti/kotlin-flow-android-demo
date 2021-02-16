@@ -15,8 +15,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.example.flowplayground.MainActivityViewModel
 import com.example.flowplayground.R
+import com.example.flowplayground.repo.Animal
 import com.example.flowplayground.repo.AppDatabase
-import com.example.flowplayground.repo.Dog
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,7 +42,7 @@ class SearchableAnimalListViewModel(db: AppDatabase) : ViewModel() {
     private val _searchName: MutableStateFlow<String> = MutableStateFlow("")
 
     @ExperimentalCoroutinesApi
-    val allDogsSearch: Flow<List<Dog>> = _searchName.flatMapLatest(db.dogDao()::getDogs)
+    val allDogsSearch: Flow<List<Animal>> = _searchName.flatMapLatest(db.animalDao()::search)
 
     fun searchName(name: String) {
         _searchName.value = name
