@@ -36,7 +36,11 @@ class MainActivityViewModelFactory(
 
 class MainActivityViewModel(
     val db: AppDatabase
-) : ViewModel()
+) : ViewModel() {
+    suspend fun addAnimal(name: String, cuteness: Int, barkVolume: Int) {
+        db.animalDao().add(Animal(name, cuteness, barkVolume))
+    }
+}
 
 class MainActivity : AppCompatActivity() {
 
@@ -64,12 +68,16 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<FloatingActionButton>(R.id.fab)
             .setOnClickListener { view ->
-                val addDogDialog = AddDogDialog()
+                val addDogDialog = AddDogDialog(view.context)
                 AlertDialog.Builder(view.context)
-                    .setView(addDogDialog.getView(view.context))
+                    .setView(addDogDialog.view)
                     .setPositiveButton("Save") { _, _ ->
                         lifecycleScope.launch {
-                            viewModel.db.animalDao().add(addDogDialog.getDogFromValues())
+                            viewModel.addAnimal(
+                                addDogDialog.getName(),
+                                addDogDialog.getCuteness(),
+                                addDogDialog.getBarkVolume()
+                            )
                         }
                     }
                     .setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
@@ -77,18 +85,21 @@ class MainActivity : AppCompatActivity() {
             }
     }
 
-    private class AddDogDialog {
-        private val nameId = View.generateViewId()
-        private val cutenessId = View.generateViewId()
-        private val barkId = View.generateViewId()
+    private class AddDogDialog(context: Context) {
+        companion object {
+            private val nameId = View.generateViewId()
+            private val cutenessId = View.generateViewId()
+            private val barkId = View.generateViewId()
+        }
 
-        private lateinit var name: EditText
-        private lateinit var cuteness: EditText
-        private lateinit var barkLevel: EditText
+        val view: View
+        private val nameET: EditText
+        private val cutenessET: EditText
+        private val barkVolumeET: EditText
 
-        fun getView(context: Context): View =
-            RelativeLayout(context).apply {
-                name = EditText(context).apply {
+        init {
+            view = RelativeLayout(context).apply {
+                nameET = EditText(context).apply {
                     this.id = nameId
                     this.hint = "Name"
                     this.inputType = InputType.TYPE_CLASS_TEXT
@@ -101,7 +112,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 }.also(this::addView)
 
-                cuteness = EditText(context).apply {
+                cutenessET = EditText(context).apply {
                     this.id = cutenessId
                     this.hint = "Cuteness"
                     this.inputType = InputType.TYPE_CLASS_NUMBER
@@ -114,9 +125,9 @@ class MainActivity : AppCompatActivity() {
                     }
                 }.also(this::addView)
 
-                barkLevel = EditText(context).apply {
+                barkVolumeET = EditText(context).apply {
                     this.id = barkId
-                    this.hint = "Bark Level"
+                    this.hint = "Bark Volume"
                     this.inputType = InputType.TYPE_CLASS_NUMBER
                     layoutParams = RelativeLayout.LayoutParams(
                         RelativeLayout.LayoutParams.MATCH_PARENT,
@@ -127,12 +138,10 @@ class MainActivity : AppCompatActivity() {
                     }
                 }.also(this::addView)
             }
+        }
 
-        fun getDogFromValues(): Animal =
-            Animal(
-                name.text.toString(),
-                cuteness.text.toString().toInt(),
-                barkLevel.text.toString().toInt()
-            )
+        fun getName(): String = nameET.text.toString()
+        fun getCuteness(): Int = cutenessET.text.toString().toInt()
+        fun getBarkVolume(): Int = barkVolumeET.text.toString().toInt()
     }
 }
