@@ -9,9 +9,8 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 
 @Dao
 abstract class AnimalDao {
-    // TODO Show how to create a wrapper method so app can use it as a Flow
     @Query("""SELECT * FROM Animal""")
-    abstract fun getAll(): List<Animal>
+    abstract suspend fun getAll(): List<Animal>
 
     @Query("""SELECT * FROM Animal""")
     abstract fun getAllFlow(): Flow<List<Animal>>

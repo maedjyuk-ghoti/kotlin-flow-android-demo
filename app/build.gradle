@@ -30,6 +30,11 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    packagingOptions {
+        exclude "META-INF/licenses/**"
+        exclude "META-INF/AL2.0"
+        exclude "META-INF/LGPL2.1"
+    }
 }
 
 dependencies {
@@ -50,4 +55,5 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.3.0"
     implementation "androidx.fragment:fragment-ktx:1.3.0"
     implementation "androidx.room:room-ktx:2.2.6"
+    androidTestImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.2'
 }
