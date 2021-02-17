@@ -63,7 +63,7 @@ class AnimalDaoTest {
 
     @Test
     @Throws(Exception::class)
-    fun testSearchCaseInsensitive() = testScope.runBlockingTest {
+    fun testSearch_CaseInsensitive() = testScope.runBlockingTest {
         val animals = listOf(
             Animal("test", 0, 0),
             Animal("Test", 0, 0),
@@ -97,7 +97,7 @@ class AnimalDaoTest {
 
     @Test
     @Throws(Exception::class)
-    fun testSearchPartialMatch() = testScope.runBlockingTest {
+    fun testSearch_PartialMatches() = testScope.runBlockingTest {
         val animals = listOf(
             Animal("test", 0, 0),
             Animal("testing", 0, 0),
